@@ -1,0 +1,22 @@
+name: Daily Ballerina Run
+
+on:
+  schedule:
+    # Runs at 00:00 UTC every day
+    - cron: "0 0 * * *"
+
+jobs:
+  run-ballerina:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Ballerina
+        uses: ballerina-platform/ballerina-action@v2.0.0
+        with:
+          ballerina-version: "slbeta5"
+
+      - name: Run Ballerina script
+        run: ballerina run main.bal
