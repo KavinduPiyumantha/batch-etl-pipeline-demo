@@ -89,7 +89,7 @@ function transformLoanRequest(LoanRequest loanRequest, LoanApproval loanApproval
     LoanCatergotyByAmount loanCatergoryByAmount = getLoanCategoryByAmount(amount, loanType);
 
     // Calculate total interest
-    decimal totalInterest = interest;
+    decimal totalInterest = interest*grantedAmount;
 
     // Get the loan status
     LoanStatus loanStatus = getLoanStatus(status);

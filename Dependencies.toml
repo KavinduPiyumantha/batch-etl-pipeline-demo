@@ -5,7 +5,7 @@
 
 [ballerina]
 dependencies-toml-version = "2"
-distribution-version = "2201.10.0"
+distribution-version = "2201.10.1"
 
 [[package]]
 org = "ballerina"
@@ -179,7 +179,7 @@ modules = [
 [[package]]
 org = "ballerinax"
 name = "h2.driver"
-version = "1.0.0"
+version = "1.1.0"
 modules = [
 	{org = "ballerinax", packageName = "h2.driver", moduleName = "h2.driver"}
 ]
@@ -201,7 +201,7 @@ modules = [
 
 [[package]]
 org = "lakshanweerasinghe"
-name = "batch_etl_pipeline"
+name = "batch_etl_pipeline_demo"
 version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "io"},
@@ -214,6 +214,6 @@ dependencies = [
 	{org = "ballerinax", name = "java.jdbc"}
 ]
 modules = [
-	{org = "lakshanweerasinghe", packageName = "batch_etl_pipeline", moduleName = "batch_etl_pipeline"}
+	{org = "lakshanweerasinghe", packageName = "batch_etl_pipeline_demo", moduleName = "batch_etl_pipeline_demo"}
 ]
 
