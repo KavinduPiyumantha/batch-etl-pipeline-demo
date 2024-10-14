@@ -3,6 +3,7 @@ import ballerina/sql;
 import ballerina/time;
 import ballerinax/h2.driver as _;
 import ballerinax/java.jdbc;
+import ballerina/io;
 
 final jdbc:Client dbClient = check new (url = "jdbc:h2:file:./database/loandatabase", user = "test", password = "test");
 
@@ -15,16 +16,44 @@ public function main() returns error? {
 
 function extract() returns [LoanRequest[], LoanApproval[]]|error {
     log:printInfo("BEGIN: extract data from the sftp server");
-    // Hint: Use io ballerina library and read the csv files
 
-    string loanRequestFile = "loan_request_2024_03_22.csv";
-    LoanRequest[] loanRequests;
+    string loanRequestFile = "resources/loan_request_2024_03_22.csv";
+    string loanApprovalsFile = "resources/approved_loans_2024_03_22.csv";
 
-    string loanApprovalsFile = "approved_loans_2024_03_22.csv";    
-    LoanApproval[] loanApprovals;
+    // Sample CSV content
+    LoanRequest[] loanRequestContent = [
+        {loanRequestId: 1, amount: 10000, period: 12, branch: "Branch1", datetime: "2024-03-22T10:00:00", status: "pending", loanType: "personal"},
+        {loanRequestId: 2, amount: 15000, period: 24, branch: "Branch2", datetime: "2024-03-22T11:00:00", status: "approved", loanType: "educational"}
+    ];
+    LoanApproval[] loanApprovalContent = [
+        {loanRequestId: 1, loanId: 1, interest: 0.05, grantedAmount: 10000, period: 12},
+        {loanRequestId: 2, loanId: 2, interest: 0.06, grantedAmount: 15000, period: 24}
+    ];
+
+    // Writes the given content `record[]` to a CSV file.
+    check io:fileWriteCsv(loanRequestFile, loanRequestContent);
+    check io:fileWriteCsv(loanApprovalsFile, loanApprovalContent);
+
+    // Reads the previously-saved CSV file as a `record[]`.
+    LoanRequest[] readLoanRequests = check io:fileReadCsv(loanRequestFile);
+    LoanApproval[] readLoanApprovals = check io:fileReadCsv(loanApprovalsFile);
+    io:println(readLoanRequests);
+    io:println(readLoanApprovals);
+
+    // Reads the previously-saved CSV file as a record stream.
+    stream<LoanRequest, io:Error?> loanRequestStream = check io:fileReadCsvAsStream(loanRequestFile);
+    stream<LoanApproval, io:Error?> loanApprovalStream = check io:fileReadCsvAsStream(loanApprovalsFile);
+
+    // Iterates through the stream and prints the records.
+    check loanRequestStream.forEach(function(LoanRequest val) {
+        io:println(val);
+    });
+    check loanApprovalStream.forEach(function(LoanApproval val) {
+        io:println(val);
+    });
 
     log:printInfo("END: extract data from the sftp server");
-    return [loanRequests, loanApprovals];
+    return [readLoanRequests, readLoanApprovals];
 }
 
 function transform(LoanRequest[] loanRequests, LoanApproval[] loanApprovals)
